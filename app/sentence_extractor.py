@@ -3,6 +3,7 @@
 
 from sqlalchemy import Column, Integer, Text
 from app.db_connection import get_db_session, Base
+import random
 
 
 class Sentence(Base):
@@ -21,3 +22,12 @@ def get_sentence_by_id(sentence_id):
         if sentence is None:
             raise ValueError(f"Sentence with id {sentence_id} not found")
         return sentence
+
+
+def get_random_sentence():
+    with get_db_session() as session:
+        sentence_count = session.query(Sentence).count()
+        if sentence_count == 0:
+            return None
+        random_id = random.randint(1, sentence_count)
+        return session.query(Sentence).filter(Sentence.id == random_id).first()

@@ -2,7 +2,7 @@
 
 
 import click
-from app.sentence_extractor import get_sentence_by_id
+from app.sentence_extractor import get_sentence_by_id, get_random_sentence
 
 
 @click.command()
@@ -13,3 +13,12 @@ def num(id):
         click.echo(sentence)
     else:
         click.echo(f"Sentence with ID {id} not found.")
+
+
+@click.command()
+def random():
+    sentence = get_random_sentence()
+    if sentence:
+        click.echo(sentence)
+    else:
+        click.echo("No sentences available.")
