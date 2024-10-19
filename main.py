@@ -1,8 +1,8 @@
 """Entry point"""
 
 
-from app.commands import ok
+from app.commands_registrator import cli
 
 
 if __name__ == '__main__':
-    ok()
+    cli()
