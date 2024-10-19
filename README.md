@@ -11,4 +11,7 @@ The quick brown fox jumps over the lazy dog.
 python3 -m main random
 All that glitters is not gold.
 
+# Validate sentence
+python3 -m main put
+
 ```
