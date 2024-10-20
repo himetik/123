@@ -12,16 +12,6 @@ def _execute_query(query_func):
             return None
 
 
-def get_sentence_by_id(sentence_id: int) -> Sentence:
-    def query(session):
-        result = session.query(Sentence).filter(Sentence.id == sentence_id).one()
-        if not result:
-            raise ValueError(f"Sentence with id {sentence_id} not found")
-        return result
-
-    return _execute_query(query)
-
-
 def get_random_sentence() -> Sentence | None:
     return _execute_query(lambda session: session.query(Sentence).order_by(func.random()).first())
 
