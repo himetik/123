@@ -1,6 +1,6 @@
 import click
 from typing import Any
-from .commands import id, random, word, put
+from .cli_commands import id, random, word, put
 
 
 @click.group()

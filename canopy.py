@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from app.commands_registrator import cli
+from app.cli import cli
 
 
 if __name__ == '__main__':

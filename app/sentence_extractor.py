@@ -1,7 +1,7 @@
 from sqlalchemy import func
 from sqlalchemy.exc import NoResultFound
 from app.db_connection import get_db_session
-from app.model import Sentence
+from app.models import Sentence
 
 
 def _execute_query(query_func):

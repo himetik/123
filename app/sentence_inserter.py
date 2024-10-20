@@ -1,6 +1,6 @@
 from sqlalchemy.exc import IntegrityError
 from app.db_connection import get_db_session
-from app.model import Sentence
+from app.models import Sentence
 
 
 def insert_sentence(sentence_text: str) -> bool:

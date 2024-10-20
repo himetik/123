@@ -1,7 +1,7 @@
 import click
 from app.sentence_extractor import get_sentence_by_id, get_random_sentence, get_random_sentence_by_word
 from app.sentence_validator import validate_sentence
-from app.sentence_database_insertion_handler import insert_sentence
+from app.sentence_inserter import insert_sentence
 
 
 def echo_sentence(sentence, not_found_message):
