@@ -35,27 +35,6 @@ def word(word):
 
 
 @click.command()
-def put():
-    while True:
-        sentence_text = input("Enter a sentence (or 'q' to quit): ")
-        if sentence_text.lower() == 'q':
-            break
-
-        try:
-            if validate_sentence(sentence_text):
-                if insert_sentence(sentence_text):
-                    click.echo("Sentence added.")
-                else:
-                    click.echo("Failed to add sentence (it may already exist).")
-            else:
-                click.echo("The sentence did not pass validation.")
-        except Exception as e:
-            click.echo(f"Error processing the sentence: {e}")
-
-    click.echo("Program finished.")
-
-
-@click.command()
 def bulk():
     loader = TextLoader()
     splitter = SentenceSplitter()
@@ -67,14 +46,30 @@ def bulk():
         return
 
     sentences = splitter.split_text(text)
-
     validator = SentenceValidator()
+    valid_sentences = []
 
     for sentence in sentences:
         try:
             validator.validate(sentence)
-            click.echo(f"{sentence}")
+            valid_sentences.append(sentence)
         except SentenceValidationError:
             continue
+
+    click.echo("The following valid sentences have been found:")
+    for sentence in valid_sentences:
+        click.echo(f"- {sentence}")
+
+    if not valid_sentences:
+        click.echo("No valid sentences found to save.")
+        return
+
+    confirmation = input("Do you want to save these sentences to the database? (y/n): ")
+    if confirmation.lower() == 'y':
+        for sentence in valid_sentences:
+            insert_sentence(sentence)
+        click.echo("Sentences have been successfully saved to the database.")
+    else:
+        click.echo("The sentences were not saved.")
 
     click.echo("Bulk processing finished.")
