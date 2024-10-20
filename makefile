@@ -5,10 +5,10 @@ install:
 	@pip install -e .
 
 uninstall:
-	@pip uninstall canopy
+	@pip uninstall -y canopy
 
 reinstall:
-	@pip uninstall canopy
+	@pip uninstall -y canopy
 	@pip install -e .
 
-.PHONY: lint install reinstall
+.PHONY: lint install uninstall reinstall
