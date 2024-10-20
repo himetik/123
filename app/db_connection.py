@@ -1,6 +1,3 @@
-"""Establishes a connection to the database"""
-
-
 import os
 from typing import Generator
 from sqlalchemy import create_engine
