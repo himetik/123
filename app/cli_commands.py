@@ -2,6 +2,8 @@ import click
 from app.sentence_extractor import get_sentence_by_id, get_random_sentence, get_random_sentence_by_word
 from app.sentence_validator import validate_sentence
 from app.sentence_inserter import insert_sentence
+from app.text_loader import TextLoader
+from app.text_validator import TextValidator
 
 
 def echo_sentence(sentence, not_found_message):
@@ -37,7 +39,7 @@ def put():
         sentence_text = input("Enter a sentence (or 'q' to quit): ")
         if sentence_text.lower() == 'q':
             break
-        
+
         try:
             if validate_sentence(sentence_text):
                 if insert_sentence(sentence_text):
@@ -50,3 +52,17 @@ def put():
             click.echo(f"Error processing the sentence: {e}")
 
     click.echo("Program finished.")
+
+
+@click.command()
+def bulk():
+    loader = TextLoader()
+    validator = TextValidator()
+
+    text = loader.load_bulk_text()
+
+    if not validator.validate(text):
+        click.echo("Error: The text failed validation. Please check the input data.")
+        return
+
+    click.echo("Text successfully loaded and validated.")
