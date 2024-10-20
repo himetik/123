@@ -1,6 +1,6 @@
 import click
 from typing import Any
-from .commands import num, random, word, put
+from .commands import id, random, word, put
 
 
 @click.group()
@@ -9,7 +9,7 @@ def cli() -> None:
 
 
 def register_commands() -> None:
-    commands = [num, random, word, put]
+    commands = [id, random, word, put]
     for command in commands:
         cli.add_command(command)
 

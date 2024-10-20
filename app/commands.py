@@ -10,7 +10,7 @@ def echo_sentence(sentence, not_found_message):
 
 @click.command()
 @click.argument('id', type=int)
-def num(id):
+def id(id):
     sentence = get_sentence_by_id(id)
     echo_sentence(sentence, f"Sentence with ID {id} not found.")
 
