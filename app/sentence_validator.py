@@ -1,41 +1,70 @@
 import re
+from typing import List, Callable
 
 
 class SentenceValidationError(Exception):
     pass
 
 
-def validate_sentence(sentence: str) -> None:
+class SentenceValidator:
+    def __init__(self):
+        self.rules: List[Callable[[str], None]] = [
+            self._check_not_empty,
+            self._check_length,
+            self._check_capitalization,
+            self._check_ending_punctuation,
+            self._check_no_newlines,
+            self._check_letter_percentage,
+            self._check_allowed_characters,
+            self._check_word_count,
+            self._check_no_extra_spaces
+        ]
 
-    if not sentence:
-        raise SentenceValidationError("Sentence must not be empty.")
+    def validate(self, sentence: str) -> bool:
+        for rule in self.rules:
+            rule(sentence)
+        return True
 
-    if len(sentence) < 6:
-        raise SentenceValidationError("Sentence must be at least 6 characters long.")
+    def _check_not_empty(self, sentence: str) -> None:
+        if not sentence:
+            raise SentenceValidationError("Sentence must not be empty.")
 
-    if len(sentence) > 180:
-        raise SentenceValidationError("Sentence must not exceed 180 characters.")
+    def _check_length(self, sentence: str) -> None:
+        if len(sentence) < 6:
+            raise SentenceValidationError("Sentence must be at least 6 characters long.")
+        if len(sentence) > 180:
+            raise SentenceValidationError("Sentence must not exceed 180 characters.")
 
-    if not sentence[0].isupper():
-        raise SentenceValidationError("Sentence must start with a capital letter.")
+    def _check_capitalization(self, sentence: str) -> None:
+        if not sentence[0].isupper():
+            raise SentenceValidationError("Sentence must start with a capital letter.")
 
-    if not re.search(r'[.!?]$', sentence):
-        raise SentenceValidationError("Sentence must end with '.', '!', or '?'.")
+    def _check_ending_punctuation(self, sentence: str) -> None:
+        if not re.search(r'[.!?]$', sentence):
+            raise SentenceValidationError("Sentence must end with '.', '!', or '?'.")
 
-    if '\n' in sentence:
-        raise SentenceValidationError("Sentence must not contain newline characters.")
+    def _check_no_newlines(self, sentence: str) -> None:
+        if '\n' in sentence:
+            raise SentenceValidationError("Sentence must not contain newline characters.")
 
-    letter_count = sum(1 for char in sentence if char.isalpha())
-    total_count = len(sentence)
+    def _check_letter_percentage(self, sentence: str) -> None:
+        letter_count = sum(1 for char in sentence if char.isalpha())
+        if letter_count < len(sentence) / 2:
+            raise SentenceValidationError("Sentence must contain at least 50% letters.")
 
-    if letter_count < total_count / 2:
-        raise SentenceValidationError("Sentence must contain at least 50% letters.")
+    def _check_allowed_characters(self, sentence: str) -> None:
+        if not re.match(r'^[A-Za-z0-9\s.!?,;:\'-]+$', sentence):
+            raise SentenceValidationError("Sentence must only contain English letters, numbers, and basic punctuation.")
 
-    if not re.match(r'^[A-Za-z0-9\s.!?,;:-]+$', sentence):
-        raise SentenceValidationError("Sentence must only contain English letters, numbers, and basic punctuation.")
+    def _check_word_count(self, sentence: str) -> None:
+        if len(sentence.split()) < 2:
+            raise SentenceValidationError("Sentence must consist of at least 2 words.")
 
-    if len(sentence.split()) < 2:
-        raise SentenceValidationError("Sentence must consist of at least 2 words.")
+    def _check_no_extra_spaces(self, sentence: str) -> None:
+        if '  ' in sentence:
+            raise SentenceValidationError("Sentence must not contain extra spaces.")
 
-    if '  ' in sentence:
-        raise SentenceValidationError("Sentence must not contain extra spaces.")
+
+def validate_sentence(sentence: str) -> bool:
+    validator = SentenceValidator()
+    return validator.validate(sentence)
