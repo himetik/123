@@ -8,8 +8,6 @@ class Sentence(Base):
 
     id = Column(Integer, primary_key=True)
     sentence = Column(Text, nullable=False, unique=True, index=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     def __repr__(self):
         return f"<Sentence(id={self.id}, sentence='{self.sentence[:50]}...', created_at={self.created_at})>"
