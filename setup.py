@@ -13,7 +13,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'canopy = app.commands_registrator:cli',
+            'canopy = app.cli:cli',
         ],
     },
 )
