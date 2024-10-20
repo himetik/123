@@ -1,5 +1,5 @@
 import click
-from app.sentence_extractor import get_sentence_by_id, get_random_sentence, get_random_sentence_by_word
+from app.sentence_extractor import get_random_sentence, get_random_sentence_by_word
 from app.sentence_validator import SentenceValidationError, SentenceValidator
 from app.sentence_inserter import insert_sentence
 from app.text_loader import TextLoader
@@ -13,13 +13,6 @@ def echo_sentence(sentence, not_found_message):
 @click.group()
 def cli():
     pass
-
-
-@cli.command()
-@click.argument('id', type=int)
-def id(id):
-    sentence = get_sentence_by_id(id)
-    echo_sentence(sentence, f"Sentence with ID {id} not found.")
 
 
 @cli.command()
