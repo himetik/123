@@ -4,7 +4,7 @@ from app.models import Sentence
 
 
 def insert_sentence(sentence_text: str) -> bool:
-    
+
     with get_db_session() as session:
         existing_sentence = session.query(Sentence).filter_by(sentence=sentence_text).first()
         if existing_sentence:
