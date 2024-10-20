@@ -37,7 +37,7 @@ def get_db_session() -> Generator[Session, None, None]:
     session = Session()
     try:
         yield session
-    except Exception as e:
+    except Exception as e:  # noqa: F841
         session.rollback()
         raise
     finally:
