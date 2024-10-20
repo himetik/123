@@ -1,8 +1,17 @@
 ```sh
 
-# Installation
+# INSTALLATION
+
 # Ensure you're in the project root directory and your virtual environment is activated
 pip install -e .
+
+# Install the dependencies listed in requirements.txt
+pip install -r requirements.txt
+
+# Install the language model
+python -m spacy download en_core_web_sm
+
+# USAGE
 
 # After installation, you can use 'canopy' instead of 'python3 -m canopy'
 
@@ -15,7 +24,8 @@ canopy word '<word>'
 # Add sentences (interactive prompt)
 canopy bulk
 
-# Examples:
+# EXAMPLES
+
 canopy random
 canopy word 'example'
 canopy bulk
