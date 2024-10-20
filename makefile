@@ -1,14 +1,14 @@
 lint:
-	flake8
+	@flake8
 
 install:
-	pip install -e .
+	@pip install -e .
 
 uninstall:
-	pip uninstall canopy
+	@pip uninstall canopy
 
 reinstall:
-	pip uninstall canopy
-	pip install -e .
+	@pip uninstall canopy
+	@pip install -e .
 
 .PHONY: lint install reinstall
