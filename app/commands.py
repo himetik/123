@@ -1,9 +1,7 @@
-"""Contains all commands"""
-
-
 import click
 from app.sentence_extractor import get_sentence_by_id, get_random_sentence, get_random_sentence_by_word
-from app.sentence_validator import validate_sentence, SentenceValidationError
+from app.sentence_validator import validate_sentence
+from app.sentence_database_insertion_handler import insert_sentence
 
 
 @click.command()
@@ -32,22 +30,28 @@ def word(word):
     if sentence:
         click.echo(sentence)
     else:
-        click.echo(f"Sentence containing word '{word}' not found")
+        click.echo(f"Sentence containing the word '{word}' not found.")
 
 
 @click.command()
 def put():
     while True:
-        statement = click.prompt("Enter a statement to validate (or '\quit' to exit)")
-
-        if statement.lower() == '\quit':
-            click.echo("Exiting the validation process.")
+        sentence_text = input("Enter a sentence (or 'q' to quit): ")
+        if sentence_text.lower() == 'q':
             break
 
         try:
-            validate_sentence(statement)
-            click.echo(f'"{statement}" is valid.')
-        except SentenceValidationError as e:
-            click.echo(f"Error: {e}")
+            validation_result = validate_sentence(sentence_text)
+            
+            if validation_result:
+                insert_result = insert_sentence(sentence_text)
+                if insert_result:
+                    click.echo("Sentence added.")
+                else:
+                    click.echo("Failed to add sentence (it may already exist).")
+            else:
+                click.echo("The sentence did not pass validation.")
+        except Exception as e:
+            click.echo(f"Error processing the sentence: {e}")
 
-        click.echo()
+    print("Program finished.")
