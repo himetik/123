@@ -1,18 +1,7 @@
-"""Module for sentence database operations."""
-
-
-from sqlalchemy import func, Column, Integer, Text
+from sqlalchemy import func
 from sqlalchemy.exc import NoResultFound
 from app.db_connection import get_db_session, Base
-
-
-class Sentence(Base):
-    __tablename__ = 'sentences'
-    id = Column(Integer, primary_key=True)
-    sentence = Column(Text)
-
-    def __repr__(self):
-        return f"{self.sentence}"
+from app.model import Sentence
 
 
 def get_sentence_by_id(sentence_id: int) -> Sentence:
@@ -31,7 +20,7 @@ def get_random_sentence() -> Sentence | None:
 def get_random_sentence_by_word(word: str) -> str:
     with get_db_session() as session:
         random_sentence = session.query(Sentence)\
-            .filter(Sentence.sentence.ilike(f'% {word} %'))\
+            .filter(Sentence.sentence.ilike(f'%{word}%'))\
             .order_by(func.random())\
             .first()
         
