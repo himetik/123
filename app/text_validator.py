@@ -1,5 +1,5 @@
 class TextValidator:
-    MAX_TEXT_LENGTH = 1000
+    MAX_TEXT_LENGTH = 10000
 
     @staticmethod
     def validate(text: str) -> bool:
