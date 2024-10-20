@@ -1,17 +1,31 @@
 ```sh
 
-# Num usage
-python3 -m main num {id}
+# Installation
+# Ensure you're in the project root directory and your virtual environment is activated
+pip install -e .
 
-# Example
-python3 -m main num 5
-The quick brown fox jumps over the lazy dog.
+# After installation, you can use 'canopy' instead of 'python3 -m canopy'
 
-# Random usage example
-python3 -m main random
-All that glitters is not gold.
+# Available Commands:
 
-# Validate sentence
-python3 -m main put
+# Retrieve a sentence by ID
+canopy num <id>
+
+# Get a random sentence
+canopy random
+
+# Search for sentences containing a specific word
+canopy word '<word>'
+
+# Add a new sentence (interactive prompt)
+canopy put
+
+# Examples:
+canopy num 42
+canopy random
+canopy word 'example'
+canopy put
+
+# Note: Replace <id> and '<word>' with actual values when using the commands
 
 ```
