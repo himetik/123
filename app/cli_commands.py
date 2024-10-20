@@ -10,20 +10,25 @@ def echo_sentence(sentence, not_found_message):
     click.echo(sentence if sentence else not_found_message)
 
 
-@click.command()
+@click.group()
+def cli():
+    pass
+
+
+@cli.command()
 @click.argument('id', type=int)
 def id(id):
     sentence = get_sentence_by_id(id)
     echo_sentence(sentence, f"Sentence with ID {id} not found.")
 
 
-@click.command()
+@cli.command()
 def random():
     sentence = get_random_sentence()
     echo_sentence(sentence, "No sentences available.")
 
 
-@click.command()
+@cli.command()
 @click.argument('word', type=str)
 def word(word):
     try:
@@ -33,42 +38,48 @@ def word(word):
         click.echo(str(e))
 
 
-@click.command()
+@cli.command()
 def bulk():
     loader = TextLoader()
     splitter = SentenceSplitter()
+    validator = SentenceValidator()
 
     text = loader.load_bulk_text()
-
     if not text:
         click.echo("Error: The loaded text is empty. Please check the input data.")
         return
 
     sentences = splitter.split_text(text)
-    validator = SentenceValidator()
-    valid_sentences = []
-
-    for sentence in sentences:
-        try:
-            validator.validate(sentence)
-            valid_sentences.append(sentence)
-        except SentenceValidationError:
-            continue
-
-    click.echo("The following valid sentences have been found:")
-    for sentence in valid_sentences:
-        click.echo(f"- {sentence}")
+    valid_sentences = [sentence for sentence in sentences if _is_valid_sentence(sentence, validator)]
 
     if not valid_sentences:
         click.echo("No valid sentences found to save.")
         return
 
-    confirmation = input("Do you want to save these sentences to the database? (y/n): ")
-    if confirmation.lower() == 'y':
-        for sentence in valid_sentences:
-            insert_sentence(sentence)
-        click.echo("Sentences have been successfully saved to the database.")
-    else:
-        click.echo("The sentences were not saved.")
+    _display_valid_sentences(valid_sentences)
+    if _confirm_save():
+        _save_sentences(valid_sentences)
 
-    click.echo("Bulk processing finished.")
+
+def _is_valid_sentence(sentence, validator):
+    try:
+        validator.validate(sentence)
+        return True
+    except SentenceValidationError:
+        return False
+
+
+def _display_valid_sentences(sentences):
+    click.echo("The following valid sentences have been found:")
+    for sentence in sentences:
+        click.echo(f"- {sentence}")
+
+
+def _confirm_save():
+    return click.confirm("Do you want to save these sentences to the database?")
+
+
+def _save_sentences(sentences):
+    for sentence in sentences:
+        insert_sentence(sentence)
+    click.echo("Sentences have been successfully saved to the database.")
