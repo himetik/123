@@ -1,3 +1,4 @@
+import os
 import click
 from app.sentence_extractor import get_random_sentence, get_random_sentence_by_word
 from app.sentence_validator import SentenceValidationError, SentenceValidator
@@ -37,7 +38,13 @@ def bulk():
     splitter = SentenceSplitter()
     validator = SentenceValidator()
 
-    text = loader.load_bulk_text()
+    file_path = input("Enter the path to the .txt file: ").strip()
+
+    if not os.path.isfile(file_path):
+        click.echo("Error: The specified file does not exist. Please check the file path.")
+        return
+
+    text = loader.load_bulk_text(file_path)
     if not text:
         click.echo("Error: The loaded text is empty. Please check the input data.")
         return
@@ -48,8 +55,6 @@ def bulk():
     if not valid_sentences:
         click.echo("No valid sentences found to save.")
         return
-
-    _display_valid_sentences(valid_sentences)
 
     if _confirm_save():
         _save_sentences(valid_sentences)
@@ -65,12 +70,6 @@ def _is_valid_sentence(sentence, validator):
         return False
 
 
-def _display_valid_sentences(sentences):
-    click.echo("The following valid sentences have been found:")
-    for sentence in sentences:
-        click.echo(f"- {sentence}")
-
-
 def _confirm_save():
     return click.confirm("Do you want to save these sentences to the database?")
 
@@ -79,3 +78,4 @@ def _save_sentences(sentences):
     for sentence in sentences:
         insert_sentence(sentence)
     click.echo("Sentences have been successfully saved to the database.")
+

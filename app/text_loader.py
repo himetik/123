@@ -1,13 +1,4 @@
-import click
-
-
 class TextLoader:
-    def load_bulk_text(self):
-        click.echo("Enter text (empty line to finish):")
-        lines = []
-        while True:
-            line = input()
-            if line.strip() == "":
-                break
-            lines.append(line)
-        return "\n".join(lines)
+    def load_bulk_text(self, file_path):
+        with open(file_path, 'r', encoding='utf-8') as file:
+            return file.read()
