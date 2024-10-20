@@ -1,9 +1,10 @@
 import click
 from app.sentence_extractor import get_sentence_by_id, get_random_sentence, get_random_sentence_by_word
-from app.sentence_validator import validate_sentence
+from app.sentence_validator import validate_sentence, SentenceValidationError, SentenceValidator
 from app.sentence_inserter import insert_sentence
 from app.text_loader import TextLoader
 from app.text_validator import TextValidator
+from app.text_separator import SentenceSplitter
 
 
 def echo_sentence(sentence, not_found_message):
@@ -57,12 +58,23 @@ def put():
 @click.command()
 def bulk():
     loader = TextLoader()
-    validator = TextValidator()
+    splitter = SentenceSplitter()
 
     text = loader.load_bulk_text()
 
-    if not validator.validate(text):
-        click.echo("Error: The text failed validation. Please check the input data.")
+    if not text:
+        click.echo("Error: The loaded text is empty. Please check the input data.")
         return
 
-    click.echo("Text successfully loaded and validated.")
+    sentences = splitter.split_text(text)
+
+    validator = SentenceValidator()
+
+    for sentence in sentences:
+        try:
+            validator.validate(sentence)
+            click.echo(f"{sentence}")
+        except SentenceValidationError:
+            continue
+
+    click.echo("Bulk processing finished.")
