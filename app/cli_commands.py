@@ -50,8 +50,11 @@ def bulk():
         return
 
     _display_valid_sentences(valid_sentences)
+
     if _confirm_save():
         _save_sentences(valid_sentences)
+    else:
+        click.echo("Save operation was canceled.")
 
 
 def _is_valid_sentence(sentence, validator):

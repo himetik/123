@@ -1,5 +1,6 @@
 import re
 from typing import List, Callable
+from app.sentence_moderator import moderate_profanity
 
 
 class SentenceValidationError(Exception):
@@ -17,7 +18,8 @@ class SentenceValidator:
             self._check_letter_percentage,
             self._check_allowed_characters,
             self._check_word_count,
-            self._check_no_extra_spaces
+            self._check_no_extra_spaces,
+            self._check_profanity
         ]
 
     def validate(self, sentence: str) -> bool:
@@ -63,6 +65,11 @@ class SentenceValidator:
     def _check_no_extra_spaces(self, sentence: str) -> None:
         if '  ' in sentence:
             raise SentenceValidationError("Sentence must not contain extra spaces.")
+
+    def _check_profanity(self, sentence: str) -> None:
+        has_profanity, profanities = moderate_profanity(sentence)
+        if has_profanity:
+            raise SentenceValidationError(f"Sentence contains profanity: {', '.join(profanities)}.")
 
 
 def validate_sentence(sentence: str) -> bool:
