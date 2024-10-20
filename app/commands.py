@@ -4,33 +4,31 @@ from app.sentence_validator import validate_sentence
 from app.sentence_database_insertion_handler import insert_sentence
 
 
+def echo_sentence(sentence, not_found_message):
+    click.echo(sentence if sentence else not_found_message)
+
+
 @click.command()
 @click.argument('id', type=int)
 def num(id):
     sentence = get_sentence_by_id(id)
-    if sentence:
-        click.echo(sentence)
-    else:
-        click.echo(f"Sentence with ID {id} not found.")
+    echo_sentence(sentence, f"Sentence with ID {id} not found.")
 
 
 @click.command()
 def random():
     sentence = get_random_sentence()
-    if sentence:
-        click.echo(sentence)
-    else:
-        click.echo("No sentences available.")
+    echo_sentence(sentence, "No sentences available.")
 
 
 @click.command()
 @click.argument('word', type=str)
 def word(word):
-    sentence = get_random_sentence_by_word(word)
-    if sentence:
-        click.echo(sentence)
-    else:
-        click.echo(f"Sentence containing the word '{word}' not found.")
+    try:
+        sentence = get_random_sentence_by_word(word)
+        echo_sentence(sentence, f"Sentence containing the word '{word}' not found.")
+    except ValueError as e:
+        click.echo(str(e))
 
 
 @click.command()
@@ -39,13 +37,10 @@ def put():
         sentence_text = input("Enter a sentence (or 'q' to quit): ")
         if sentence_text.lower() == 'q':
             break
-
+        
         try:
-            validation_result = validate_sentence(sentence_text)
-            
-            if validation_result:
-                insert_result = insert_sentence(sentence_text)
-                if insert_result:
+            if validate_sentence(sentence_text):
+                if insert_sentence(sentence_text):
                     click.echo("Sentence added.")
                 else:
                     click.echo("Failed to add sentence (it may already exist).")
@@ -54,4 +49,4 @@ def put():
         except Exception as e:
             click.echo(f"Error processing the sentence: {e}")
 
-    print("Program finished.")
+    click.echo("Program finished.")
